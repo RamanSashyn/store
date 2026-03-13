@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth
+from django.urls import reverse
 
 from users.models import User
 from users.forms import UserLoginForm
@@ -14,6 +15,7 @@ def login(request):
             user = auth.authenticate(username=username, password=password)
             if user:
                 auth.login(request, user)
+                return HttpResponseRedirect(reverse('index'))
     else:
         form = UserLoginForm()
     context = {'form': form}
