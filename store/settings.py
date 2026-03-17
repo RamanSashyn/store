@@ -130,3 +130,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Users
 AUTH_USER_MODEL = 'users.User'
+
+# Работа login_required
+LOGIN_URL = 'users:login'
