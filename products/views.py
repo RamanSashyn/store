@@ -21,34 +21,17 @@ class ProductsListView(ListView):
     model = Product
     template_name = 'products/products.html'
     paginate_by = 3
-    # пагинация который заложен в ListView поэтому не надо объявлять классы и т.д(не надо настраивать вручную), но надо изменить шаблон
 
     def get_queryset(self):  # метод для фильтрации списка
         queryset = super(ProductsListView, self).get_queryset()
-        # основной метод с чистым списком объектов т.е. Product.objects.all()
         category_id = self.kwargs.get('category_id')
-        # достаем category_id из словаря поэтому через get чтобы не было ошибки
         return queryset.filter(category_id=category_id) if category_id else queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(ProductsListView, self).get_context_data() # основной метод
+        context = super(ProductsListView, self).get_context_data()
         context['title'] = 'Store - Каталог'
         context['categories'] = ProductCategory.objects.all()
         return context
-
-
-# def products(request, category_id=None, page_number=1):
-#     products = Product.objects.filter(category_id=category_id) if category_id else Product.objects.all()
-#     per_page = 3
-#     paginator = Paginator(products, per_page)
-#     products_paginator = paginator.page(page_number)
-#
-#     context = {
-#         'title': 'Store - Каталог',
-#         'categories': ProductCategory.objects.all(),
-#         'products': products_paginator,
-#     }
-#     return render(request, 'products/products.html', context)
 
 
 @login_required
