@@ -11,16 +11,16 @@ class IndexViewTestCase(TestCase):
     def test_view(self):
         # в тестах нужно имитировать работу пользователя
         path = reverse('index')
-        response = self.client.get(path) # делаем запрос на страницу
+        response = self.client.get(path)  # делаем запрос на страницу
 
-        # метод assertEqual позволяет убедиться, что фактический результат работы функции или метода соответствует ожидаемому значению
+        # метод assertEqual позволяет убедиться, что фактический результат работы функции соответствует ожидаемому
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context_data['title'], 'Store')
         self.assertTemplateUsed(response, 'products/index.html')
 
 
 class ProductsListViewTestCase(TestCase):
-    fixtures = ['categories.json', 'products.json'] # использование наших fixtures
+    fixtures = ['categories.json', 'products.json']  # использование наших fixtures
 
     # метод который позволяет объявить переменную которая будет использоваться в тестах
     def setUp(self):
@@ -54,4 +54,3 @@ class ProductsListViewTestCase(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTemplateUsed(response, 'products/products.html')
         self.assertEqual(response.context_data['title'], 'Store - Каталог')
-
