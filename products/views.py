@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import HttpResponseRedirect
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
+from django.core.cache import cache
 
 from common.views import TitleMixin
 from products.models import Basket, Product, ProductCategory
@@ -25,7 +26,12 @@ class ProductsListView(TitleMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ProductsListView, self).get_context_data()
-        context['categories'] = ProductCategory.objects.all()
+        categories = cache.get('categories')  # достаем данные из кэша
+        if not categories:  # если данных нет в кэш, то их надо закэшировать
+            context['categories'] = ProductCategory.objects.all()
+            cache.set('categories', context['categories'], 30)
+        else:  # если данные все таки есть в кэше, то в контекст передаем данные из кэша
+            context['categories'] = categories
         return context
 
 
