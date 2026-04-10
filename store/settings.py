@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
+    'debug_toolbar',
 
     'products',
     'users',
@@ -59,6 +60,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'allauth.account.middleware.AccountMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'store.urls'
@@ -81,6 +83,12 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'store.wsgi.application'
+
+# Конфигурация для Toolbar
+INTERNAL_IPS = [
+    '127.0.0.1',
+    'localhost',
+]
 
 
 # Database
