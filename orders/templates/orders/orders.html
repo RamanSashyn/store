@@ -1,4 +1,4 @@
-{% extends 'products/base.html %}
+{% extends 'products/base.html' %}
 {% load static %}
 
 {% block css %}
@@ -28,7 +28,7 @@
                             <td>21 авг. 21 года</td>
                             <td>5 070 руб.</td>
                             <td>
-                                <a href="order.html">просмотреть</a>
+                                <a href="{% url 'orders:order_detail' %}">просмотреть</a>
                             </td>
                         </tr>
                         <tr class="table-success">
@@ -37,7 +37,7 @@
                             <td>16 июля 21 года</td>
                             <td>4 876 руб.</td>
                             <td>
-                                <a href="order.html">просмотреть</a>
+                                <a href="{% url 'orders:order_detail' %}">просмотреть</a>
                             </td>
                         </tr>
                         <tr class="table-info">
@@ -46,7 +46,7 @@
                             <td>14 нояб. 21 года</td>
                             <td>9 566 руб.</td>
                             <td>
-                                <a href="order.html">просмотреть</a>
+                                <a href="{% url 'orders:order_detail' %}">просмотреть</a>
                             </td>
                         </tr>
                         </tbody>
