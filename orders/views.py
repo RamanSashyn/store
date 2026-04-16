@@ -1,16 +1,18 @@
 import stripe
 from http import HTTPStatus
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic import TemplateView, DetailView, CreateView
 from django.urls import reverse, reverse_lazy
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 
 from common.views import TitleMixin
 from orders.forms import OrderForm
 from orders.models import Order
 
 client = stripe.StripeClient(settings.STRIPE_SECRET_KEY)
+endpoint_secret = settings.STRIPE_SECRET_KEY
 
 
 class SuccessTemplateView(TitleMixin, TemplateView):
@@ -47,6 +49,15 @@ class OrderCreateView(TitleMixin, CreateView):
     def form_valid(self, form):
         form.instance.initiator = self.request.user
         return super(OrderCreateView, self).form_valid(form)
+
+
+@csrf_exempt
+def stripe_webhook_view(request):
+    payload = request.body
+
+    print(payload)
+
+    return HttpResponse(status=HTTPStatus.OK)
 
 
 class OrderListView(TitleMixin, TemplateView):
