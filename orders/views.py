@@ -12,7 +12,7 @@ from orders.forms import OrderForm
 from orders.models import Order
 
 client = stripe.StripeClient(settings.STRIPE_SECRET_KEY)
-endpoint_secret = settings.STRIPE_SECRET_KEY
+endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
 
 
 class SuccessTemplateView(TitleMixin, TemplateView):
@@ -40,6 +40,7 @@ class OrderCreateView(TitleMixin, CreateView):
                     'quantity': 1,
                 },
             ],
+            'metadata': {'order_id': self.object.id},  # нужно передать id для будущего использования
             'mode': 'payment',
             'success_url': '{}{}'.format(settings.DOMAIN_NAME, reverse('orders:order_success')),
             'cancel_url': '{}{}'.format(settings.DOMAIN_NAME, reverse('orders:order_canceled')),
@@ -54,10 +55,31 @@ class OrderCreateView(TitleMixin, CreateView):
 @csrf_exempt
 def stripe_webhook_view(request):
     payload = request.body
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    event = None
 
-    print(payload)
+    try:
+        event = client.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError as e:
+        print("Invalid payload:", e)
+        return HttpResponse(status=HTTPStatus.BAD_REQUEST)
+    except stripe.error.SignatureVerificationError as e:
+        print("Signature verification failed:", e)
+        return HttpResponse(status=HTTPStatus.BAD_REQUEST)
+
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+
+        fulfill_order(session)
 
     return HttpResponse(status=HTTPStatus.OK)
+
+
+def fulfill_order(session):
+    order_id = int(session.metadata.order_id)  # приходит в строковом типе
+    print("Fulfilling Checkout Session")
 
 
 class OrderListView(TitleMixin, TemplateView):
