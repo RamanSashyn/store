@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from common.views import TitleMixin
 from orders.forms import OrderForm
 from orders.models import Order
+from products.models import Basket
 
 client = stripe.StripeClient(settings.STRIPE_SECRET_KEY)
 endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
@@ -33,13 +34,11 @@ class OrderCreateView(TitleMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         super(OrderCreateView, self).post(request, *args, **kwargs)
+        # формируем список словарей с корзиной с фильтрацией по пользователю который отправляет запрос
+        baskets = Basket.objects.filter(user=self.request.user)
+
         checkout_session = client.v1.checkout.sessions.create(params={
-            'line_items': [
-                {
-                    'price': 'price_1TMVpE4DTPB8CBsAfAhN4LZj',
-                    'quantity': 1,
-                },
-            ],
+            'line_items': baskets.stripe_products(),
             'metadata': {'order_id': self.object.id},  # нужно передать id для будущего использования
             'mode': 'payment',
             'success_url': '{}{}'.format(settings.DOMAIN_NAME, reverse('orders:order_success')),
