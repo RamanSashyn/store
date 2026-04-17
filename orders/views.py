@@ -25,7 +25,6 @@ class CanceledTemplateView(TitleMixin, TemplateView):
     template_name = 'orders/cancel.html'
 
 
-
 class OrderCreateView(TitleMixin, CreateView):
     template_name = 'orders/order-create.html'
     form_class = OrderForm
@@ -77,8 +76,9 @@ def stripe_webhook_view(request):
 
 
 def fulfill_order(session):
-    order_id = int(session.metadata.order_id)  # приходит в строковом типе
-    print("Fulfilling Checkout Session")
+    order_id = int(session.metadata.order_id)  # приходит в строковом типе, берется из metadata в checkout_session
+    order = Order.objects.get(id=order_id)
+    order.update_after_payment()
 
 
 class OrderListView(TitleMixin, TemplateView):
