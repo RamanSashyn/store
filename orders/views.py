@@ -93,6 +93,11 @@ class OrderListView(TitleMixin, ListView):
         return queryset.filter(initiator=self.request.user)
 
 
-class OrderDetailView(TitleMixin, TemplateView):
+class OrderDetailView(DetailView):
+    model = Order
     template_name = 'orders/order.html'
-    title = 'Store - Заказ №12345'
+
+    def get_context_data(self, **kwargs):
+        context = super(OrderDetailView, self).get_context_data(**kwargs)
+        context['title'] = f'Store - {self.object.id}'
+        return context
