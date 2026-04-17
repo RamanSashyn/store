@@ -1,6 +1,7 @@
 from django.db import models
 
 from users.models import User
+from products.models import Basket
 
 
 class Order(models.Model):
@@ -26,3 +27,13 @@ class Order(models.Model):
 
     def __str__(self):
         return f'Order #{self.id}. {self.first_name} {self.last_name}'
+
+    def update_after_payment(self):
+        baskets = Basket.objects.filter(user=self.initiator) # не забываем фильтровать по пользователю(тут по инициатору)
+        self.status = self.PAID # так как этот метод будет срабатывать когда оплата прошла, значит надо обновить статус
+        self.basket_history = {
+            'purchased_items': [basket.de_json() for basket in baskets], # используем метод который формировал словарь товаров в корзине
+            'total_sum': float(baskets.total_sum()) # обязательно надо привести к значению с плавающей точкой
+        }
+        baskets.delete()
+        self.save()
