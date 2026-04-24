@@ -1,13 +1,13 @@
-from http import HTTPStatus
 from datetime import timedelta
+from http import HTTPStatus
 from urllib import response
 
+from allauth.socialaccount.models import SocialApp
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.timezone import now
-from allauth.socialaccount.models import SocialApp
 
-from users.models import User, EmailVerification
+from users.models import EmailVerification, User
 
 
 class UserRegistrationViewTestCase(TestCase):

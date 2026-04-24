@@ -1,12 +1,12 @@
-import stripe
 from http import HTTPStatus
 
-from django.http import HttpResponseRedirect, HttpResponse
-from django.views.generic import TemplateView, DetailView, CreateView
-from django.views.generic.list import ListView
-from django.urls import reverse, reverse_lazy
+import stripe
 from django.conf import settings
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse, reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import CreateView, DetailView, TemplateView
+from django.views.generic.list import ListView
 
 from common.views import TitleMixin
 from orders.forms import OrderForm

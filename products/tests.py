@@ -3,7 +3,7 @@ from http import HTTPStatus
 from django.test import TestCase
 from django.urls import reverse
 
-from products.models import Product, ProductCategory, Basket
+from products.models import Basket, Product, ProductCategory
 from users.models import User
 
 
